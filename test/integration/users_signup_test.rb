@@ -15,4 +15,19 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
 		end
 		assert_template 'users/new'
   end
+
+  test 'user is created when signup info valid' do
+  	get signup_path
+  	assert_difference 'User.count', 1 do
+  		post users_path, params: { user: { name: "ben",
+  																			 email: "bk@gmail.com", 
+  																			 password: "foobar",
+  																			 password_confirmation: "foobar",
+  																			}}
+  	end
+  	follow_redirect!
+  	assert_template 'users/show'
+  	assert_not flash.empty?
+  end
+
 end
