@@ -4,6 +4,10 @@ module SessionsHelper
 		session[:user_id] = user.id
 	end
 
+	def current_user?(user)
+		user == current_user
+	end
+
 # remembers user corresponding to the remember user token
 	def current_user
 		if (user_id = session[:user_id])
@@ -38,5 +42,15 @@ module SessionsHelper
 		user.forget
 		cookies.delete(:user_id)
 		cookies.delete(:remember_token)
+	end
+
+	# Redirects to stored location (or to the default).
+	def redirect_back_or(default)
+		redirect_to(session[:forwarding_url] || default)
+		session.delete(:forwarding_url)
+	end
+
+	def store_location
+		session[:forwarding_url] = request.original_url if request.get?
 	end
 end
